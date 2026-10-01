@@ -1,0 +1,29 @@
+#Regarding virtual environment
+.venv/
+
+#These will contain sensitive information regarding api keys and database URL
+#github safe protocol
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+#Testing purposes
+.pytest_cache/
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
+
+
+*.log
+
+#local database; may be real or fake data not sure just for prep
+*.db
+*.sqlite
+*.sqlite3
