@@ -1,3 +1,13 @@
+#Python package install of FastAPI and Uvicorn
+#Creating simple endpoints and to get used to pattern of
+#handing JSON 
+
+
+
+
+
+
+
 #From the fast api package we will be using the FastAPI class
 from fastapi import FastAPI
 
@@ -23,3 +33,8 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+
+
+
