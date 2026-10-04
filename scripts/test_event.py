@@ -1,78 +1,40 @@
 from datetime import datetime
-#from app.schemas.events import MarketEvent
-from app.schemas.events import RawMarketEvent, MarketEvent
+from app.schemas.events import RawMarketEvent
+from app.intelligence.event_analyzer import analyze_event
 
-#hard coded data for a test run using the schema
-#also making sure if the LLM outputs the wrong data type the application wil be able catch it
 
-#simple test will be instead of float being placed for confidence the LLM enters a str
-#by mistake
-
-# event = MarketEvent(
-#     timestamp = datetime.now(),
+#focused on creating a simple raw event to represent fake data as incoming events before the analysis.
+# raw_event = RawMarketEvent(
+#     timestamp=datetime.now(),
 #     source="SEC",
-#     source_type = "REGULATORY_RELEASE",
-#     text="New regulatory guidance concerning cryptocurrency markets.",
-#     category="REGULATION",
-#     sentiment="BEARISH",
-#     severity="HIGH",
-#     confidence="HIGH ",
-#     affected_assets=["BTC","ETH","SOL"]
+#     source_type="REGULATORY_RELEASE",
+#     text="New regulatory guidance concerning cryptocurrency markets."
 # )
 
-#Pydantic's type coercion allows the string float to work aswell
-# event = MarketEvent(
-#     timestamp = datetime.now(),
-#     source="SEC",
-#     source_type = "REGULATORY_RELEASE",
-#     text="New regulatory guidance concerning cryptocurrency markets.",
-#     category="REGULATION",
-#     sentiment="BEARISH",
-#     severity="HIGH",
-#     confidence="0.91",
-#     affected_assets=["BTC","ETH","SOL"]
-# )
-
-
-#we want to make sure that the confidence is a valid float that makes sence
-#meaning it has to bes less than or equal to 1 with the lower bound being caped at 0
-# event = MarketEvent(
-#     timestamp = datetime.now(),
-#     source="SEC",
-#     source_type = "REGULATORY_RELEASE",
-#     text="New regulatory guidance concerning cryptocurrency markets.",
-#     category="REGULATION",
-#     sentiment="BEARISH",
-#     severity="HIGH",
-#     confidence=500.0,
-#     affected_assets=["BTC","ETH","SOL"]
-# )
 
 raw_event = RawMarketEvent(
     timestamp=datetime.now(),
-    source="SEC",
-    source_type="REGULATORY_RELEASE",
-    text="New regulatory guidance concerning cryptocurrency markets."
+    source="Ethereum Foundation",
+    source_type="PROTOCOL_ANNOUNCEMENT",
+    text="Ethereum announces a major network upgrade."
 )
 
+#Displaying the event before the analysis for better transparency of the before and after output.
 print("RAW EVENT:")
 print(raw_event)
 
 
-event = MarketEvent(
-    timestamp = datetime.now(),
-    source="SEC",
-    source_type = "REGULATORY_RELEASE",
-    text="New regulatory guidance concerning cryptocurrency markets.",
-    category="REGULATION",
-    sentiment="BEARISH",
-    severity="HIGH",
-    confidence=0.91,
-    affected_assets=["BTC","ETH","SOL"]
-)
+#Were than passing the raw_event into the analyze_event to test the functionality of the pipeline.
+#analyze_event should preserve the raw event data while taking the hard coded analysis 
+event = analyze_event(raw_event)
 
 print("\nANALYZED EVENT:")
 print(event)
+
+
+
+
+
 
 
 
