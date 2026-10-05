@@ -1,6 +1,7 @@
 from app.schemas.events import(
     RawMarketEvent,
     MarketEvent,
+    EventAnalysis,
     Sentiment,
     Severity,
 )
@@ -11,8 +12,8 @@ from app.schemas.events import(
 #and easier LLM integration; 
 
 
-#Current setup: RawMarketEvent -> rule-based/hard-coded analysis -> MarketEvent
-#Later setup: RawMarketEvent -> LLM analysis -> MarketEvent
+#Current setup: RawMarketEvent -> hard-coded analysis -> EventAnalysis -> MarketEvent
+#Later setup: RawMarketEvent -> LLM analysis -> EventAnalysis -> MarketEvent
 def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
 
     regulation_keywords = ["regulation", "regulatory"]
@@ -24,8 +25,17 @@ def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
     #any() checks whether at least one keyword appears in the event text.
     if any(keyword in text for keyword in regulation_keywords):
         category = "REGULATION"
-    else: 
+    else:
         category = "OTHER"
+
+
+    analysis = EventAnalysis(
+        category=category,
+        sentiment=Sentiment.BEARISH,
+        severity=Severity.HIGH,
+        confidence=0.91,
+        affected_assets=["BTC", "ETH", "SOL"],
+    )
 
     
     return MarketEvent(
@@ -35,10 +45,10 @@ def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
         source_type=raw_event.source_type,
         text = raw_event.text,
 
-        
-        category=category,
-        sentiment=Sentiment.BEARISH,
-        severity=Severity.HIGH,
-        confidence=0.91,
-        affected_assets=["BTC","ETH","SOL"],
+        #Analysis information from EventAnalysis
+        category=analysis.category,
+        sentiment=analysis.sentiment,
+        severity=analysis.severity,
+        confidence=analysis.confidence,
+        affected_assets=analysis.affected_assets,
     )

@@ -67,6 +67,17 @@ class RawMarketEvent(BaseModel):
     source_type: SourceType
     text: str
 
+
+#EventAnalysis represents the generated intelligence from RawMarketEvent.
+#Contains the analysis results 
+class EventAnalysis(BaseModel):
+    category: str
+    sentiment: Sentiment
+    severity: Severity
+    confidence: float = Field(ge=0.0, le=1.0)
+    affected_assets: List[str]
+
+
 class MarketEvent(RawMarketEvent):
     category: str
     sentiment: Sentiment
