@@ -7,36 +7,38 @@ from app.schemas.events import(
 )
 
 
-#This will handle raw events data with the purpose of returning the analyzed MarketEvent.
-#The info that will be used for analysis is currently hard coded for the purpose of having a working and testable pipeline
-#and easier LLM integration; 
-
-
-#Current setup: RawMarketEvent -> hard-coded analysis -> EventAnalysis -> MarketEvent
-#Later setup: RawMarketEvent -> LLM analysis -> EventAnalysis -> MarketEvent
-def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
-
+#Isolate responsibilitY of generating event analysis into its own function.
+#This function will later be adjusted to use the LLM compared to the temp rule given logic.
+def generate_analysis(raw_event: RawMarketEvent)-> EventAnalysis:
     regulation_keywords = ["regulation", "regulatory"]
-    
-
     text = raw_event.text.lower()
 
-    #Temp rule based classification used to identify regulatory events.
-    #any() checks whether at least one keyword appears in the event text.
     if any(keyword in text for keyword in regulation_keywords):
         category = "REGULATION"
     else:
         category = "OTHER"
 
-
-    analysis = EventAnalysis(
+    return EventAnalysis(
         category=category,
         sentiment=Sentiment.BEARISH,
         severity=Severity.HIGH,
         confidence=0.91,
-        affected_assets=["BTC", "ETH", "SOL"],
+        affected_assets=["BTC","ETH","SOL"],
     )
 
+    
+#This function will take RawMarketEvent generate its analysis, and combine both in to a 
+#complete MarketEvent
+
+#at this point the current set up is:
+#RawMarketEvent to hard coded analysis to the eventAnalysis and finally to a complete MarketEvent
+
+#later the set up will look like:
+#RawMarketEvent to  LLM analysis to EvenAnalysis to a Complete Market Event
+
+def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
+
+    analysis = generate_analysis(raw_event)
     
     return MarketEvent(
         #original information from the raw event
