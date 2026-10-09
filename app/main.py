@@ -3,11 +3,6 @@
 #handing JSON 
 
 
-
-
-
-
-
 #From the fast api package we will be using the FastAPI class
 from fastapi import FastAPI
 
