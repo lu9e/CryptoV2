@@ -4,7 +4,7 @@ from app.schemas.events import RawMarketEvent, EventAnalysis
 from app.intelligence.event_analyzer import generate_analysis, analyze_event
 from pydantic import ValidationError
 
-
+#Check the regulatory keyword are classified under REGULATION.
 def test_regulatory_event_category():
     raw_event = RawMarketEvent(
         timestamp = datetime.now(),
@@ -16,6 +16,7 @@ def test_regulatory_event_category():
     assert analysis.category == "REGULATION"
 
 
+#Check that events without regulatory keywords fall under OTHER.
 def test_protocol_event_category():
     raw_event = RawMarketEvent(
         timestamp = datetime.now(),
@@ -27,6 +28,7 @@ def test_protocol_event_category():
     assert analysis.category == "OTHER"
 
 
+#Making sure that the original event information is preserved after analysis
 def test_raw_event_data_is_preserved():
     timestamp = datetime(2026, 10, 5, 12, 0, 0)
     raw_event = RawMarketEvent(
@@ -43,7 +45,8 @@ def test_raw_event_data_is_preserved():
     assert event.text == raw_event.text
 
 
-
+#Confidence must stay between 0 and 1.
+#Values outside that given range should throw an error.
 def test_invalid_confidence_is_rejected():
     with pytest.raises(ValidationError):
         EventAnalysis(

@@ -4,40 +4,10 @@ from pydantic import BaseModel, Field
 from enum import Enum
 
 
-# MarketEvent will act as the blueprint; so whenever a announcement or news 
-# enter is entering the pipeline Pydantic will make sure the program has the following
-# 4 types of raw data
-
-#If there is a missing or wrong data type there will be a proper validation error
-#compared to crashing the application
-
-#Establishing the data schema by inheriting from the BaseModel of Pydantic
-#date to track how recent the event is 
-#where the event is coming from ->White House OR Exchange Announcement
-#where the source is coming from ->President OR Government OR News outlet/agency
-# #the headline -> the raw context/text that will be analyzed
-
-#may add more attributes for better accuracy which should be coming from the LLM
-
-#Old class 
-# class MarketEvent(BaseModel):
-#     timestamp: datetime
-#     source: str 
-#     source_type: str
-#     text: str
-
-#     category: str
-#     sentiment: Sentiment
-#     severity: Severity
-#     confidence: float = Field(ge=0.0, le=1.0)
-
-#     #Since we know now what we are dealing with based on the collected event
-#     #we have to determine which currency this event actually is targeting 
-#     #BTC, ETH, SOL, XRP, XMR
-#     affected_assets: List[str]
 
 
-
+#Establishing allowed values for event sentiment, severity, and source type.
+#Implement enums to help prevent inconsistent values from entering the pipeline. 
 class Sentiment(str, Enum):
     BULLISH = "BULLISH"
     BEARISH  = "BEARISH"
@@ -59,8 +29,8 @@ class SourceType(str, Enum):
     PROTOCOL_ANNOUNCEMENT = "PROTOCOL_ANNOUNCEMENT"
     COMPANY_ANNOUNCEMENT = "COMPANY_ANNOUNCEMENT"
     
-
-# RawMarketEvent represents event data before intelligence analysis. This raw data can later be passed to the LLM layer.
+#RawMarketEvent will represent incoming news/announcements before any kind of analysis.
+#Pydantic validates the time stamp as well as the source, source_type, and event text.
 class RawMarketEvent(BaseModel):
     timestamp: datetime
     source: str
@@ -68,8 +38,8 @@ class RawMarketEvent(BaseModel):
     text: str
 
 
-#EventAnalysis represents the generated intelligence from RawMarketEvent.
-#Contains the analysis results 
+#EventAnalysis will store the intelligence generated from a raw event.
+#Confidence range is also established to value between 0 and 1.
 class EventAnalysis(BaseModel):
     category: str
     sentiment: Sentiment
@@ -78,6 +48,8 @@ class EventAnalysis(BaseModel):
     affected_assets: List[str]
 
 
+#MarketEvent combines the the original incoming event data with analysis results.
+#Inheriting from RawMarketEvent avoids repeating the incoming event fields.
 class MarketEvent(RawMarketEvent):
     category: str
     sentiment: Sentiment

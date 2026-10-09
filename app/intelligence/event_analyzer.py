@@ -7,8 +7,9 @@ from app.schemas.events import(
 )
 
 
-#Isolate responsibilitY of generating event analysis into its own function.
-#This function will later be adjusted to use the LLM compared to the temp rule given logic.
+#Separating event analysis from the main processing pipeline. 
+#With the current set up being basic keyword ruling and place holder values. With the later 
+#plans involving the use of an LLM to generate analysis. 
 def generate_analysis(raw_event: RawMarketEvent)-> EventAnalysis:
     regulation_keywords = ["regulation", "regulatory"]
     text = raw_event.text.lower()
@@ -27,27 +28,19 @@ def generate_analysis(raw_event: RawMarketEvent)-> EventAnalysis:
     )
 
     
-#This function will take RawMarketEvent generate its analysis, and combine both in to a 
-#complete MarketEvent
-
-#at this point the current set up is:
-#RawMarketEvent to hard coded analysis to the eventAnalysis and finally to a complete MarketEvent
-
-#later the set up will look like:
-#RawMarketEvent to  LLM analysis to EvenAnalysis to a Complete Market Event
-
+#Takes a raw event, and generates its analysis, while combining both into a complete and organized MarketEvent.
+#The current pipeline being 
+#RawMarketEvent to Rule based analysis to EventAnalysis to a complete MarketEvent
 def analyze_event(raw_event: RawMarketEvent) -> MarketEvent:
 
     analysis = generate_analysis(raw_event)
     
     return MarketEvent(
-        #original information from the raw event
+        #Original information from the raw event as well as the analysis information from EventAnalysis.
         timestamp = raw_event.timestamp,
         source=raw_event.source,
         source_type=raw_event.source_type,
         text = raw_event.text,
-
-        #Analysis information from EventAnalysis
         category=analysis.category,
         sentiment=analysis.sentiment,
         severity=analysis.severity,
