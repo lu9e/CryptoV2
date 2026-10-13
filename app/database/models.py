@@ -28,9 +28,16 @@ class Base(DeclarativeBase):
 class MarketEventDB(Base):
     #Telling SQLAlchemy that the model corresponds to a PostgreSQL table
     __tablename__ = "market_events"
-
     id: Mapped[int] = mapped_column(primary_key=True)
     timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    source: Mapped[str] = mapped_column(String(255), nullable=False)
+    source_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+
+    category: Mapped[str] = mapped_column(String(100), nullable=False)
+    sentiment: Mapped[str] = mapped_column(String(20), nullable=False)
+    severity: Mapped[str] = mapped_column(String(20), nullable=False)
+    confidence: Mapped[float] = mapped_column(Float, nullable=False)
 
 
 
