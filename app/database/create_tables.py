@@ -15,8 +15,4 @@ Base.metadata.create_all(bind=engine)
 print("Database tables were created successfully with no errors found. ")
 
 
-#python -c "from app.database.connection import engine; from sqlalchemy import inspect; print(inspect(engine).get_table_names())"
 
-#python -c "from app.database.connection import engine; from sqlalchemy import inspect; print(inspect(engine).get_table_name()) "
-# engine connects to the cryptoV2 database; while inspect(engine) create a SQLAlchemy inspector that examines the database.
-# with get_table_names() retrieves the names of the tables that exist in the database
