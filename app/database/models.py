@@ -25,6 +25,8 @@ class Base(DeclarativeBase):
 
 #This represents the PostgreSQL market_events table.
 #Which inherits from Base to register the model with SQLAlchemy.
+
+#Model defines 10 database columns: id, timestamp, source, source_type, text, category, sentiment, severity, confidence, and affected_assets.
 class MarketEventDB(Base):
     #Telling SQLAlchemy that the model corresponds to a PostgreSQL table
     __tablename__ = "market_events"
@@ -38,6 +40,7 @@ class MarketEventDB(Base):
     sentiment: Mapped[str] = mapped_column(String(20), nullable=False)
     severity: Mapped[str] = mapped_column(String(20), nullable=False)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
+    affected_assets: Mapped[list[str]] = mapped_column(JSON, nullable=False)
 
 
 
