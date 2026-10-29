@@ -23,8 +23,20 @@ event = MarketEventDB(
 )
 
 
-# Register and commit the new event with the SQlAlchemy session, which will prepare it to be inserted into the market_events table.
-db.add(event)
-db.commit()
-db.close()
+# attempt to register the new event using the db.add(event) as well as committing it to PostgreSQL and printing a success message
+# with an exception catch to handle any potential errors during the insertion with the protocol being to roll back the database session and display an error message
+try:
+    db.add(event)
+    db.commit()
+    print("Event inserted successfully.")
+
+except Exception as error:
+    db.rollback()
+    print(f"Failed to insert event: {error}")
+    raise
+
+finally:
+    db.close()
+
+
 
